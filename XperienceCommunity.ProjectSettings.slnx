@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/examples/">
+    <Project Path="examples/DancingGoat/DancingGoat.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/XperienceCommunity.ProjectSettings/XperienceCommunity.ProjectSettings.csproj" />
+  </Folder>
+</Solution>

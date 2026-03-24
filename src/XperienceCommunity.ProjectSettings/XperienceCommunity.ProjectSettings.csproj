@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>XperienceCommunity.ProjectSettings</PackageId>
+    <Product>XperienceCommunity.ProjectSettings</Product>
+    <Description>Xperience by Kentico ProjectSettings package. Supports global and channel-specific settings with automatic fallback, managed through the Kentico admin interface.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="CMS.AssemblyDiscoverableAttribute">
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kentico.Xperience.Admin" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,39 @@
+name: Publish to NuGet
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Restore dependencies
+        run: dotnet restore --locked-mode
+
+      - name: Build
+        run: dotnet build src/XperienceCommunity.ProjectSettings/XperienceCommunity.ProjectSettings.csproj --configuration Release --no-restore
+
+      - name: Pack
+        run: dotnet pack src/XperienceCommunity.ProjectSettings/XperienceCommunity.ProjectSettings.csproj --configuration Release --no-build --output nupkg
+
+      - name: NuGet login (OIDC)
+        uses: NuGet/login@v1
+        id: nuget_login
+        with:
+          user: roeldeb
+
+      - name: Publish to NuGet using Trusted Publishing
+        run: dotnet nuget push nupkg/*.nupkg --api-key "${{ steps.nuget_login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
