@@ -1,5 +1,11 @@
 # Xperience Community: Project Settings
 
+[![NuGet](https://img.shields.io/nuget/v/XperienceCommunity.ProjectSettings.svg)](https://www.nuget.org/packages/XperienceCommunity.ProjectSettings)
+[![Downloads](https://img.shields.io/nuget/dt/XperienceCommunity.ProjectSettings?color=cc9900)](https://www.nuget.org/packages/XperienceCommunity.ProjectSettings)
+[![License](https://img.shields.io/badge/License-MIT-brightgreen?style=flat)](https://github.com/roeldeb/xperiencecommunity-projectsettings/blob/main/LICENSE.md)
+[![CI](https://github.com/roeldeb/xperiencecommunity-projectsettings/actions/workflows/ci.yml/badge.svg)](https://github.com/roeldeb/xperiencecommunity-projectsettings/actions/workflows/ci.yml)
+[![GitHub stars](https://img.shields.io/github/stars/roeldeb/xperiencecommunity-projectsettings?style=flat&label=stars&logo=github)](https://github.com/roeldeb/xperiencecommunity-projectsettings/stargazers)
+
 A comprehensive settings management system for Xperience by Kentico applications, supporting both **global settings** and/or **channel-specific settings** with automatic fallback.
 
 ![Project Settings Demo](https://raw.githubusercontent.com/roeldeb/xperiencecommunity-projectsettings/main/images/projects-settings-demo.jpg)
