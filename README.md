@@ -81,7 +81,7 @@ builder.Services.AddProjectSettings<SeoSettings>();
 
 ### 3. Create Admin UI Pages
 
-See the [Usage Guide](./docs/Usage-Guide.md) for detailed instructions on creating global and channel settings admin pages.
+See the [Usage Guide](https://github.com/roeldeb/xperiencecommunity-projectsettings/blob/main/docs/Usage-Guide.md) for detailed instructions on creating global and channel settings admin pages.
 
 ### 4. Use Settings in Your Code
 
@@ -97,7 +97,7 @@ public class SeoService(IOptions<SeoSettings> settings)
 
 ## Full Instructions
 
-View the [Usage Guide](./docs/Usage-Guide.md) for complete documentation including:
+View the [Usage Guide](https://github.com/roeldeb/xperiencecommunity-projectsettings/blob/main/docs/Usage-Guide.md) for complete documentation including:
 
 - Creating global and channel settings admin pages
 - Settings resolution and fallback behavior
@@ -113,4 +113,4 @@ Feel free to submit issues or pull requests to the repository, this is a communi
 
 ## License
 
-Distributed under the MIT License. See [`LICENSE.md`](./LICENSE.md) for more information.
+Distributed under the MIT License. See [`LICENSE.md`](https://github.com/roeldeb/xperiencecommunity-projectsettings/blob/main/LICENSE.md) for more information.
