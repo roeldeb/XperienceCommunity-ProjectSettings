@@ -1,8 +1,8 @@
 # Xperience Community: Project Settings
 
-A comprehensive settings management system for Xperience by Kentico applications, supporting both **global settings** and **channel-specific settings** with automatic fallback.
+A comprehensive settings management system for Xperience by Kentico applications, supporting both **global settings** and/or **channel-specific settings** with automatic fallback.
 
-![Project Settings Demo](./images/projects-settings-demo.jpg)
+![Project Settings Demo](https://raw.githubusercontent.com/roeldeb/xperiencecommunity-projectsettings/main/images/projects-settings-demo.jpg)
 
 > **⚠️ Internal API Warning:** This library depends on `Kentico.Xperience.Admin.Base.Forms.Internal`. This namespace is not part of Kentico's public API surface and may change between Xperience by Kentico versions without notice. Upgrading to a newer version of Xperience by Kentico may temporarily break this library until a compatible update is released.
 
