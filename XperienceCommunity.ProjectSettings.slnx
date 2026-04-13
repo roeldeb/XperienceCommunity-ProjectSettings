@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/docs/">
+    <File Path="docs/Contributing-Setup.md" />
+    <File Path="docs/Usage-Guide.md" />
+  </Folder>
   <Folder Name="/examples/">
     <Project Path="examples/DancingGoat/DancingGoat.csproj" />
   </Folder>

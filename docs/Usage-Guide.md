@@ -17,6 +17,10 @@ This guide provides full documentation for the **XperienceCommunity.ProjectSetti
 - [Admin Navigation](#admin-navigation)
 - [Key Types](#key-types)
 - [Available Form Components](#available-form-components)
+  - [Components](#components)
+  - [Selectors](#selectors)
+  - [WebPageSelectorComponent Example](#webpageselectorcomponent-example)
+- [Generate Code with GitHub Copilot](#generate-code-with-github-copilot)
 - [Database Structure](#database-structure)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
@@ -34,6 +38,7 @@ dotnet add package XperienceCommunity.ProjectSettings
 Create a class that implements `IProjectSettingsType`:
 
 ```csharp
+using CMS.ContentEngine;
 using XperienceCommunity.ProjectSettings.Classes;
 using Kentico.Xperience.Admin.Base.FormAnnotations;
 
@@ -54,6 +59,14 @@ public class SeoSettings : IProjectSettingsType
 
     [CheckBoxComponent(Label = "Enable Open Graph", Order = 3)]
     public virtual bool EnableOpenGraph { get; set; } = true;
+
+    [ContentItemSelectorComponent(
+        ImageContent.CONTENT_TYPE_NAME,
+        Label = "Logo",
+        MinimumItems = 0,
+        MaximumItems = 1,
+        Order = 4)]
+    public virtual IEnumerable<ContentItemReference> LogoImage { get; set; } = [];
 }
 ```
 
@@ -284,16 +297,91 @@ When you inject `IOptions<T>`, settings are resolved automatically based on the 
 
 ## Available Form Components
 
-| Attribute                        | Description                                      |
-| -------------------------------- | ------------------------------------------------ |
-| `[TextInputComponent]`           | Single-line text input                           |
-| `[TextAreaComponent]`            | Multi-line text area                             |
-| `[NumberInputComponent]`         | Numeric input                                    |
-| `[CheckBoxComponent]`            | Boolean checkbox                                 |
-| `[UrlSelectorComponent]`         | URL/asset selector                               |
-| `[DropDownComponent]`            | Dropdown selection                               |
-| `[RichTextComponent]`            | Rich text editor                                 |
-| `[ContentItemSelectorComponent]` | Content item selector (images, reusable content) |
+### Components
+
+| Attribute | C# Type | Description |
+|-----------|---------|-------------|
+| `[TextInputComponent]` | `string` | Single-line text input |
+| `[TextAreaComponent]` | `string` | Multi-line text area |
+| `[NumberInputComponent]` | `int?` | Integer number input |
+| `[DecimalNumberInputComponent]` | `decimal?` | Decimal number input |
+| `[CheckBoxComponent]` | `bool` | Boolean checkbox |
+| `[DropDownComponent]` | `string` | Dropdown selection (single option) |
+| `[RadioGroupComponent]` | `string` | Radio button group (single selection) |
+| `[RichTextEditorComponent]` | `string` | Rich text editor (HTML) |
+| `[CodeEditorComponent]` | `string` | Code editor with syntax highlighting |
+| `[PasswordComponent]` | `string` | Password input (obscured text) |
+| `[DateInputComponent]` | `DateTime?` | Date selector |
+| `[DateTimeInputComponent]` | `DateTime?` | Date and time selector |
+| `[ExtensionSelectorComponent]` | `string` | Allowed file extensions selector |
+
+### Selectors
+
+| Attribute | C# Type | Description |
+|-----------|---------|-------------|
+| `[ContentItemSelectorComponent]` | `IEnumerable<ContentItemReference>` | Content item selector (pages, images, reusable content) |
+| `[WebPageSelectorComponent]` | `IEnumerable<WebPageRelatedItem>` | Web page selector (pages from website channel content tree) |
+| `[UrlSelectorComponent]` | `string` | URL selector (external URL or page from content tree) |
+| `[TagSelectorComponent]` | `IEnumerable<TagReference>` | Taxonomy tag selector |
+| `[ObjectSelectorComponent]` | `IEnumerable<ObjectRelatedItem>` | Database object selector (users, etc.) |
+| `[GeneralSelectorComponent]` | `IEnumerable<string>` | Custom data selector with search |
+| `[EmailSelectorComponent]` | `IEnumerable<EmailRelatedItem>` | Email selector (from email channels) |
+| `[FormSelectorComponent]` | `IEnumerable<ObjectRelatedItem>` | Form selector |
+| `[SmartFolderSelectorComponent]` | `SmartFolderReference` | Smart folder selector |
+| `[ContentFolderSelectorComponent]` | `int` | Content folder selector |
+
+> **Namespace notes:**
+> - Most attributes: `Kentico.Xperience.Admin.Base.FormAnnotations`
+> - `WebPageSelectorComponent`: `Kentico.Xperience.Admin.Websites.FormAnnotations` (`WebPageRelatedItem` is in `CMS.Websites`)
+> - `EmailSelectorComponent`: `Kentico.Xperience.Admin.DigitalMarketing.FormAnnotations`
+> - `TagSelectorComponent` / `ContentItemSelectorComponent`: `Kentico.Xperience.Admin.Base.FormAnnotations` or `Kentico.Xperience.Admin.Content.FormAnnotations`
+
+### WebPageSelectorComponent Example
+
+The `WebPageSelectorComponent` enables users to select pages from a website channel's content tree. It returns `IEnumerable<WebPageRelatedItem>` objects identified by page GUIDs.
+
+**Configuration properties:**
+- **TreePath** – limits selection to a subtree (e.g., `"/Articles"`)
+- **MaximumPages** – max selectable pages (default: 1, use 0 for unlimited)
+- **Sortable** – enables ordering of selected pages
+- **ItemModifierType** – a type implementing `IWebPagePanelItemModifier` to disable specific pages from selection
+
+```csharp
+using CMS.Websites;
+using Kentico.Xperience.Admin.Websites;
+using Kentico.Xperience.Admin.Websites.FormAnnotations;
+
+[WebPageSelectorComponent(
+    TreePath = "/Articles",
+    MaximumPages = 5,
+    // Built-in modifier that prevents selection of folders
+    // and pages whose content type is not included in routing
+    ItemModifierType = typeof(WebPagesWithUrlWebPagePanelItemModifier),
+    Label = "Pages",
+    Order = 1)]
+public virtual IEnumerable<WebPageRelatedItem> Pages { get; set; } = new List<WebPageRelatedItem>();
+```
+
+> **Note:** The `WebPageSelectorComponent` attribute is in the `Kentico.Xperience.Admin.Websites.FormAnnotations` namespace (not `Kentico.Xperience.Admin.Base.FormAnnotations`).
+
+## Generate Code with GitHub Copilot
+
+Use the included [GitHub Copilot prompt](./../.github/prompts/create-project-settings.prompt.md) to quickly scaffold new settings. Copy it to your project's `.github/prompts/` directory or use it directly in Copilot Chat.
+
+### Example Copilot Request
+
+```
+Create project settings using XperienceCommunity.ProjectSettings with:
+
+Settings Name: Newsletter
+Properties:
+- FromEmail (string, TextInput, default: "newsletter@example.com")
+- FromName (string, TextInput, default: "Newsletter")
+- EnableDoubleOptIn (bool, CheckBox, default: true)
+- WelcomeMessage (string, RichText, default: "")
+
+Target: Both global and channel settings
+```
 
 ## Database Structure
 
