@@ -24,8 +24,8 @@ public class ProjectSettingsUsageExample
         var settings = _seoSettings.Value;
 
         // Use the settings
-        var showRobots = settings.ShowRobots;
-        var favicon = settings.Favicon;
+        var titleSuffix = settings.MetaTitleSuffix;
+        var robotsDirective = settings.RobotsDirective;
 
         // Settings are cached per request and per channel
     }
