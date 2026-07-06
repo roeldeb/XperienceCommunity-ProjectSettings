@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.EmailComponents.Enums;
+namespace DancingGoat.EmailComponents.Enums;
 
 /// <summary>
 /// The horizontal alignment.

@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Commerce
+namespace DancingGoat.Commerce
 {
     /// <summary>
     /// Represents the result of evaluating a coupon code within the current context

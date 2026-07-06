@@ -1,4 +1,4 @@
-﻿using CMS.Core;
+using CMS.Core;
 
 using Kentico.Xperience.Admin.Base.Forms;
 

@@ -1,4 +1,4 @@
-﻿using DancingGoat.Commerce;
+using DancingGoat.Commerce;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;

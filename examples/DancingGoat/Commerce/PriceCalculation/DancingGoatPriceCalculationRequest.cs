@@ -1,4 +1,4 @@
-﻿using CMS.Commerce;
+using CMS.Commerce;
 
 namespace DancingGoat.Commerce;
 

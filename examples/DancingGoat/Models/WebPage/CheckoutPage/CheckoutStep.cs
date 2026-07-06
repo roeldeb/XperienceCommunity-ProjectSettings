@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Models;
+namespace DancingGoat.Models;
 
 /// <summary>
 /// Represents the steps in the checkout process.

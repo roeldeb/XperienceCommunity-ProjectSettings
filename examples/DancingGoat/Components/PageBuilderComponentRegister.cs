@@ -1,4 +1,4 @@
-﻿using DancingGoat;
+using DancingGoat;
 using DancingGoat.Models;
 using DancingGoat.PageTemplates;
 using DancingGoat.Sections;

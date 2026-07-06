@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Models
+namespace DancingGoat.Models
 {
     public class ConsentViewModel
     {

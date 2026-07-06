@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.InlineEditors
+namespace DancingGoat.InlineEditors
 {
     /// <summary>
     /// Base class for inline editor view models.

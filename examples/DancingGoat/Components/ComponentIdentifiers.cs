@@ -1,4 +1,4 @@
-﻿namespace DancingGoat
+namespace DancingGoat
 {
     /// <summary>
     /// Encapsulated identifiers of components.

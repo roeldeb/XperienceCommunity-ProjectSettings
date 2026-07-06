@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   window.kentico.pageBuilder.registerInlineEditor("color-picker-editor", {
     init: function (options) {
       var editor = options.editor;

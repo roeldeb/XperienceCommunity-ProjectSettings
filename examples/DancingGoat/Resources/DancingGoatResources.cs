@@ -1,4 +1,4 @@
-﻿using CMS.Localization;
+using CMS.Localization;
 
 using DancingGoat;
 

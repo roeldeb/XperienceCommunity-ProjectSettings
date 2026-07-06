@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.EmailComponents.Enums;
+namespace DancingGoat.EmailComponents.Enums;
 
 /// <summary>
 /// The type of HTML element rendered by button widget.

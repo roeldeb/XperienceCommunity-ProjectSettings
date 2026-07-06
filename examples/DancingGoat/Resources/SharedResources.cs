@@ -1,4 +1,4 @@
-﻿namespace DancingGoat
+namespace DancingGoat
 {
     public class SharedResources
     {

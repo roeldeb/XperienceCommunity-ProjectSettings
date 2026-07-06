@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Models
+namespace DancingGoat.Models
 {
     public record ContactViewModel(string Name, string Street, string City, string Country, string ZipCode, string Phone, string Email)
     {

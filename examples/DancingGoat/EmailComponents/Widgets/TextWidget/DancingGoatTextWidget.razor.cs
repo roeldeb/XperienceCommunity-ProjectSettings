@@ -1,4 +1,4 @@
-﻿using DancingGoat.EmailComponents;
+using DancingGoat.EmailComponents;
 
 using Kentico.EmailBuilder.Web.Mvc;
 

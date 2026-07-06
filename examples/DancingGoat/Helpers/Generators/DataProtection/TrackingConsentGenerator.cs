@@ -1,4 +1,4 @@
-﻿using CMS.DataEngine;
+using CMS.DataEngine;
 using CMS.DataProtection;
 
 namespace DancingGoat.Helpers.Generator

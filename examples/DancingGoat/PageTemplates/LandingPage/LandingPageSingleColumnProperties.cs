@@ -1,4 +1,4 @@
-﻿using Kentico.PageBuilder.Web.Mvc.PageTemplates;
+using Kentico.PageBuilder.Web.Mvc.PageTemplates;
 using Kentico.Xperience.Admin.Base;
 using Kentico.Xperience.Admin.Base.FormAnnotations;
 

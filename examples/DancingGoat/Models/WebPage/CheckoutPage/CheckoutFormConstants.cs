@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Models
+namespace DancingGoat.Models
 {
     /// <summary>
     /// Constants for the checkout form.

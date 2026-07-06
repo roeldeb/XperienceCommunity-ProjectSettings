@@ -1,4 +1,4 @@
-﻿using DancingGoat.Models;
+using DancingGoat.Models;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;

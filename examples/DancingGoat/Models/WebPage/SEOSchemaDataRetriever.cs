@@ -1,4 +1,4 @@
-﻿using Kentico.Content.Web.Mvc.PageBuilder;
+using Kentico.Content.Web.Mvc.PageBuilder;
 
 namespace DancingGoat.Models
 {

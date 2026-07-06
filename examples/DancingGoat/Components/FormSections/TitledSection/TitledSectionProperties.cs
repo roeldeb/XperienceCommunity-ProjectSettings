@@ -1,4 +1,4 @@
-﻿using Kentico.Forms.Web.Mvc;
+using Kentico.Forms.Web.Mvc;
 using Kentico.Xperience.Admin.Base.FormAnnotations;
 
 namespace DancingGoat.Components.FormSections.TitledSection

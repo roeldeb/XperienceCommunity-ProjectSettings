@@ -1,4 +1,4 @@
-﻿using DancingGoat.EmailComponents.Enums;
+using DancingGoat.EmailComponents.Enums;
 
 using Kentico.EmailBuilder.Web.Mvc;
 using Kentico.Xperience.Admin.Base.FormAnnotations;

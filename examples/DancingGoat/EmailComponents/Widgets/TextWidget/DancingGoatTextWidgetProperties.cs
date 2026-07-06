@@ -1,4 +1,4 @@
-﻿using CMS.ContentEngine;
+using CMS.ContentEngine;
 
 using Kentico.EmailBuilder.Web.Mvc;
 
