@@ -271,18 +271,34 @@ When you inject `IOptions<T>`, settings are resolved automatically based on the 
 
 ### Admin UI Features
 
+Both admin pages base their state purely on whether a settings **record** exists — not on
+whether the stored values happen to match the developer defaults. This means the editable form
+only appears once you have explicitly created an override, and the callouts always describe
+which values are currently in effect. Creating or resetting an override reloads the page, so the
+form and callouts update immediately without a manual browser refresh.
+
 **Global Settings Page:**
 
-- Shows warning when using developer defaults (no saved settings)
-- "Create override" button to save initial settings
-- Shows links to channels that have overrides
+- When no global record exists, the form is **disabled** and previews the developer defaults. A
+  "Using developer defaults" callout with a **Create override** button lets you store an initial
+  record so the settings become editable.
+- When a global record exists, a **Reset to developer defaults** page action deletes the record
+  (with a destructive confirmation dialog) so the system falls back to the developer defaults.
+- Lists the channels that have their own settings (as links). When creating global settings, it
+  notes that those channels already override the global values and will not be affected.
 
 **Channel Settings Page:**
 
-- Shows warning when overriding global settings
-- "Reset to default" button to remove channel-specific settings
-- "Create override" button to create channel-specific settings
-- Only supports Website channels
+- When no channel record exists, the form is **disabled** and previews the effective values — the
+  global settings when they exist, otherwise the developer defaults. A **Create override** button
+  seeds a new channel record from those effective values, so creating an override does not change
+  the values already in effect.
+- When a channel record exists, a **Reset** page action removes it (with a destructive
+  confirmation dialog). It is labeled **Reset to global settings** when global settings exist,
+  or **Reset to developer defaults** when they do not.
+- An "Overriding global settings" callout links back to the global settings page when the channel
+  record overrides global values.
+- Only supports Website channels.
 
 ## Key Types
 

@@ -21,6 +21,10 @@ public class GlobalSettingsEditPage<T>(
     private T model = new();
     private ProjectSettingsInfo? currentSetting;
 
+    // Resolved via the service locator instead of constructor injection
+    // to keep the constructor signature backwards compatible for consumers
+    private static IPageLinkGenerator PageLinkGenerator => Service.Resolve<IPageLinkGenerator>();
+
     protected override T Model
     {
         get
@@ -39,14 +43,16 @@ public class GlobalSettingsEditPage<T>(
 
         var callouts = new List<CalloutConfiguration>();
 
+        var overrideChannelNames = GetOverrideChannels();
+
         if (currentSetting is { ProjectSettingsID: 0 })
         {
             PageConfiguration.EditMode = FormEditMode.Disabled;
 
             var callout = new CalloutConfiguration
             {
-                Headline = "Warning",
-                Content = "System is using developer defaults, do you want to change these settings?",
+                Headline = "Using developer defaults",
+                Content = "These settings are not stored yet — the values shown below are the developer defaults. Create an override to edit and save them.",
                 ContentAsHtml = true,
                 Type = CalloutType.FriendlyWarning,
                 ActionButton = new CalloutCommandButtonConfiguration
@@ -57,16 +63,41 @@ public class GlobalSettingsEditPage<T>(
             };
 
             callouts.Add(callout);
-        }
-        else
-        {
-            var overrideChannelNames = GetOverrideChannels();
+
             if (overrideChannelNames.Count > 0)
             {
                 callouts.Add(new()
                 {
-                    Headline = "Warning",
-                    Content = $"There are overrides for these settings in channel(s): {GetChannelSettingLinks(overrideChannelNames)}",
+                    Headline = "Channel settings exist",
+                    Content = $"Channel(s) {GetChannelSettingLinks(overrideChannelNames)} already have their own settings. Global settings created here will not apply to those channels.",
+                    ContentAsHtml = true,
+                    Type = CalloutType.FriendlyWarning
+                });
+            }
+        }
+        else
+        {
+            PageConfiguration.AdditionalActions.Add(new ButtonEditTemplateActionComponent(ActionType.Command)
+            {
+                Label = "Reset to developer defaults",
+                Parameter = nameof(ResetToDeveloperDefaults),
+                ButtonColor = ButtonColor.Secondary,
+                Destructive = true,
+                ConfirmationDialog = new ConfirmationDialog
+                {
+                    Title = "Reset to developer defaults",
+                    Detail = "The global settings will be deleted and the system will use the developer defaults.",
+                    Button = "Reset",
+                    Destructive = true
+                }
+            });
+
+            if (overrideChannelNames.Count > 0)
+            {
+                callouts.Add(new()
+                {
+                    Headline = "Channel overrides exist",
+                    Content = $"These settings are overridden in channel(s): {GetChannelSettingLinks(overrideChannelNames)}. Changes saved here will not apply to those channels.",
                     ContentAsHtml = true,
                     Type = CalloutType.FriendlyWarning
                 });
@@ -107,8 +138,8 @@ public class GlobalSettingsEditPage<T>(
             {
                 await ProjectSettingsInfo.Provider.SetAsync(currentSetting);
 
-                return Response()
-                    .AddSuccessMessage("Project settings created.");
+                // Reload the current page so ConfigurePage re-enables the form
+                return NavigateTo(PageLinkGenerator.GetPath(GetType()), true);
             }
 
             return Response()
@@ -116,10 +147,35 @@ public class GlobalSettingsEditPage<T>(
         }
         catch (Exception ex)
         {
-            EventLogService.LogException(nameof(ChannelSettingsEditPage<T>), nameof(CreateOverride), ex);
+            EventLogService.LogException(nameof(GlobalSettingsEditPage<T>), nameof(CreateOverride), ex);
 
             return Response()
                 .AddErrorMessage("Unable to create project settings. Check eventlog for more details!");
+        }
+    }
+
+    [PageCommand]
+    public async Task<ICommandResponse> ResetToDeveloperDefaults()
+    {
+        try
+        {
+            if (currentSetting is { ProjectSettingsID: > 0 })
+            {
+                await ProjectSettingsInfo.Provider.DeleteAsync(currentSetting);
+
+                // Reload the current page so ConfigurePage reflects the removed settings
+                return NavigateTo(PageLinkGenerator.GetPath(GetType()), true);
+            }
+
+            return Response()
+                .AddWarningMessage("Already using developer defaults.");
+        }
+        catch (Exception ex)
+        {
+            EventLogService.LogException(nameof(GlobalSettingsEditPage<T>), nameof(ResetToDeveloperDefaults), ex);
+
+            return Response()
+                .AddErrorMessage("Unable to reset settings. Check eventlog for more details!");
         }
     }
 
@@ -128,7 +184,6 @@ public class GlobalSettingsEditPage<T>(
         var channelIdsQuery = ProjectSettingsInfo.Provider.Get()
             .WhereEquals(nameof(ProjectSettingsInfo.ProjectSettingsName), Model.SettingsName)
             .WhereGreaterThan(nameof(ProjectSettingsInfo.ProjectSettingsChannelID), 0)
-            .WhereNotEquals(nameof(ProjectSettingsInfo.ProjectSettingsValue), JsonSerializer.Serialize(Model))
             .AsSingleColumn(nameof(ProjectSettingsInfo.ProjectSettingsChannelID));
 
         var channelNames = ChannelInfo.Provider.Get()

@@ -23,6 +23,14 @@ Settings are managed through the Kentico admin interface and retrieved programma
 
 **Key Concept:** Whether settings are global or channel-specific is determined by which admin UI page you create. The same settings class can be used for both contexts.
 
+### Admin UI
+
+- Until you explicitly **create an override**, the form stays disabled and previews the values currently in effect — the developer defaults on the global page, or the global settings (falling back to developer defaults) on a channel page.
+- A **Reset** page action removes an override with a destructive confirmation. On the global page it resets to the developer defaults; on a channel page it resets to the global settings, or the developer defaults when none exist.
+- Creating or resetting an override refreshes the page immediately, and the global page lists any channels that have their own settings.
+
+See the [Usage Guide](https://github.com/roeldeb/xperiencecommunity-projectsettings/blob/main/docs/Usage-Guide.md#admin-ui-features) for the full behavior.
+
 ## Requirements
 
 ### Library Version Matrix
