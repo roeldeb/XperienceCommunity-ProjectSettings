@@ -1,4 +1,4 @@
-﻿using CMS.ContactManagement;
+using CMS.ContactManagement;
 using CMS.DataEngine;
 using CMS.MacroEngine;
 using CMS.Membership;

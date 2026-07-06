@@ -1,4 +1,4 @@
-﻿using DancingGoat.Components.FormSections.TitledSection;
+using DancingGoat.Components.FormSections.TitledSection;
 
 using Kentico.Forms.Web.Mvc;
 

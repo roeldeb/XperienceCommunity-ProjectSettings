@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 
 using CMS;
 using CMS.Commerce;

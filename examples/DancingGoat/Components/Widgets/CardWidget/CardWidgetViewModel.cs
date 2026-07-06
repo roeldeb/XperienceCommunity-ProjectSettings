@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Widgets
+namespace DancingGoat.Widgets
 {
     /// <summary>
     /// View model for Card widget.

@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Models;
+namespace DancingGoat.Models;
 
 /// <summary>
 /// Data transfer object for customer information in the checkout process.

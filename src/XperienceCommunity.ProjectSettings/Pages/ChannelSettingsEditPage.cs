@@ -44,102 +44,127 @@ public class ChannelSettingsEditPage<T>(Kentico.Xperience.Admin.Base.Forms.Inter
         var channel = channelInfoProvider.Get(ObjectId);
         if (channel?.ChannelType != ChannelType.Website)
         {
-            PageConfiguration.SubmitConfiguration.Visible = false;
-            PageConfiguration.EditMode = FormEditMode.Disabled;
-            PageConfiguration.Headline = "Channel custom settings is not supported.";
-
-            PageConfiguration.Callouts =
-            [
-                new CalloutConfiguration
-                {
-                        Headline = "NOT SUPPORTED!",
-                        Content = "<p>Channel custom settings is supported only for <strong>Website</strong> channels!</p>",
-                        ContentAsHtml = true,
-                        Type = CalloutType.FriendlyWarning
-                    }
-            ];
+            ConfigureUnsupportedChannelPage();
         }
         else
         {
-            PopulateData();
-
-            bool globalSettingsExist = GlobalSettingsExist();
-
-            if (currentSetting is { ProjectSettingsID: > 0 })
-            {
-                string resetLabel = globalSettingsExist ? "Reset to global settings" : "Reset to developer defaults";
-
-                PageConfiguration.AdditionalActions.Add(new ButtonEditTemplateActionComponent(ActionType.Command)
-                {
-                    Label = resetLabel,
-                    Parameter = nameof(ResetToDefault),
-                    ButtonColor = ButtonColor.Secondary,
-                    Destructive = true,
-                    ConfirmationDialog = new ConfirmationDialog
-                    {
-                        Title = resetLabel,
-                        Detail = globalSettingsExist
-                            ? "The channel-specific settings will be deleted and the global settings will apply."
-                            : "The channel-specific settings will be deleted and the system will use the developer defaults.",
-                        Button = "Reset",
-                        Destructive = true
-                    }
-                });
-            }
-
-            var callouts = new List<CalloutConfiguration>();
-
-            if (currentSetting is { ProjectSettingsID: 0 })
-            {
-                PageConfiguration.EditMode = FormEditMode.Disabled;
-
-                callouts.Add(new CalloutConfiguration
-                {
-                    Headline = globalSettingsExist ? "Using global settings" : "Using developer defaults",
-                    Content = globalSettingsExist
-                        ? $"This channel has no settings of its own — the <a href=\"/admin/project-settings/{Model.SettingsSlug}\">global settings</a> apply and are shown below. Create an override to use different values for this channel."
-                        : "This channel has no settings of its own and no global settings exist — the developer defaults apply and are shown below. Create an override to use different values for this channel.",
-                    ContentAsHtml = true,
-                    Type = CalloutType.FriendlyWarning,
-                    ActionButton = new CalloutCommandButtonConfiguration
-                    {
-                        ClickCommandName = nameof(CreateOverride),
-                        Text = "Create override"
-                    }
-                });
-            }
-            else if (globalSettingsExist)
-            {
-                callouts.Add(new CalloutConfiguration
-                {
-                    Headline = "Overriding global settings",
-                    Content = $"These channel-specific settings override the <a href=\"/admin/project-settings/{Model.SettingsSlug}\">global settings</a>. Use \"Reset to global settings\" to return to the global values.",
-                    ContentAsHtml = true,
-                    Type = CalloutType.FriendlyWarning
-                });
-            }
-
-            if (!string.IsNullOrEmpty(Model.SettingsExplanation))
-            {
-                callouts.Add(new()
-                {
-                    Headline = "Information",
-                    Content = Model.SettingsExplanation,
-                    ContentAsHtml = true,
-                    Type = CalloutType.QuickTip
-                }
-                );
-            }
-
-            if (callouts.Count > 0)
-            {
-                PageConfiguration.Callouts = callouts;
-            }
-
+            ConfigureWebsiteChannelPage();
         }
 
         return base.ConfigurePage();
     }
+
+    private void ConfigureUnsupportedChannelPage()
+    {
+        PageConfiguration.SubmitConfiguration.Visible = false;
+        PageConfiguration.EditMode = FormEditMode.Disabled;
+        PageConfiguration.Headline = "Channel custom settings is not supported.";
+
+        PageConfiguration.Callouts =
+        [
+            new CalloutConfiguration
+            {
+                    Headline = "NOT SUPPORTED!",
+                    Content = "<p>Channel custom settings is supported only for <strong>Website</strong> channels!</p>",
+                    ContentAsHtml = true,
+                    Type = CalloutType.FriendlyWarning
+                }
+        ];
+    }
+
+    private void ConfigureWebsiteChannelPage()
+    {
+        PopulateData();
+
+        bool globalSettingsExist = GlobalSettingsExist();
+
+        if (currentSetting is { ProjectSettingsID: > 0 })
+        {
+            AddResetAction(globalSettingsExist);
+        }
+
+        var callouts = BuildCallouts(globalSettingsExist);
+
+        if (callouts.Count > 0)
+        {
+            PageConfiguration.Callouts = callouts;
+        }
+    }
+
+    private void AddResetAction(bool globalSettingsExist)
+    {
+        string resetLabel = globalSettingsExist ? "Reset to global settings" : "Reset to developer defaults";
+
+        PageConfiguration.AdditionalActions.Add(new ButtonEditTemplateActionComponent(ActionType.Command)
+        {
+            Label = resetLabel,
+            Parameter = nameof(ResetToDefault),
+            ButtonColor = ButtonColor.Secondary,
+            Destructive = true,
+            ConfirmationDialog = new ConfirmationDialog
+            {
+                Title = resetLabel,
+                Detail = globalSettingsExist
+                    ? "The channel-specific settings will be deleted and the global settings will apply."
+                    : "The channel-specific settings will be deleted and the system will use the developer defaults.",
+                Button = "Reset",
+                Destructive = true
+            }
+        });
+    }
+
+    private List<CalloutConfiguration> BuildCallouts(bool globalSettingsExist)
+    {
+        var callouts = new List<CalloutConfiguration>();
+
+        if (currentSetting is { ProjectSettingsID: 0 })
+        {
+            PageConfiguration.EditMode = FormEditMode.Disabled;
+            callouts.Add(CreateMissingOverrideCallout(globalSettingsExist));
+        }
+        else if (globalSettingsExist)
+        {
+            callouts.Add(CreateOverridingGlobalSettingsCallout());
+        }
+
+        if (!string.IsNullOrEmpty(Model.SettingsExplanation))
+        {
+            callouts.Add(CreateExplanationCallout());
+        }
+
+        return callouts;
+    }
+
+    private CalloutConfiguration CreateMissingOverrideCallout(bool globalSettingsExist) => new()
+    {
+        Headline = globalSettingsExist ? "Using global settings" : "Using developer defaults",
+        Content = globalSettingsExist
+            ? $"This channel has no settings of its own — the <a href=\"/admin/project-settings/{Model.SettingsSlug}\">global settings</a> apply and are shown below. Create an override to use different values for this channel."
+            : "This channel has no settings of its own and no global settings exist — the developer defaults apply and are shown below. Create an override to use different values for this channel.",
+        ContentAsHtml = true,
+        Type = CalloutType.FriendlyWarning,
+        ActionButton = new CalloutCommandButtonConfiguration
+        {
+            ClickCommandName = nameof(CreateOverride),
+            Text = "Create override"
+        }
+    };
+
+    private CalloutConfiguration CreateOverridingGlobalSettingsCallout() => new()
+    {
+        Headline = "Overriding global settings",
+        Content = $"These channel-specific settings override the <a href=\"/admin/project-settings/{Model.SettingsSlug}\">global settings</a>. Use \"Reset to global settings\" to return to the global values.",
+        ContentAsHtml = true,
+        Type = CalloutType.FriendlyWarning
+    };
+
+    private CalloutConfiguration CreateExplanationCallout() => new()
+    {
+        Headline = "Information",
+        Content = Model.SettingsExplanation,
+        ContentAsHtml = true,
+        Type = CalloutType.QuickTip
+    };
 
     [PageCommand]
     public async Task<ICommandResponse> ResetToDefault()

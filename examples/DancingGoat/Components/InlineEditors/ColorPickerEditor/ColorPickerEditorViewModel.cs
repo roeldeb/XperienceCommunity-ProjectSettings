@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.InlineEditors
+namespace DancingGoat.InlineEditors
 {
     /// <summary>
     /// View model for Color picker editor.

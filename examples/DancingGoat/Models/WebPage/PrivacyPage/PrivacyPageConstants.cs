@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Models
+namespace DancingGoat.Models
 {
     internal static class PrivacyPageConstants
     {

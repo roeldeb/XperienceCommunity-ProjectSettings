@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Commerce;
+namespace DancingGoat.Commerce;
 
 public sealed class ShoppingCartDataItem
 {

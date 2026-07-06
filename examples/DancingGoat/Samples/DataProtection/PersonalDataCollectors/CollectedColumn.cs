@@ -1,4 +1,4 @@
-﻿namespace Samples.DancingGoat
+namespace Samples.DancingGoat
 {
     /// <summary>
     /// Represents a column collected by personal data collector.

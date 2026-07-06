@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Helpers.Generator;
+namespace DancingGoat.Helpers.Generator;
 
 /// <summary>
 /// Contains constants for the digital marketing sample data generator.

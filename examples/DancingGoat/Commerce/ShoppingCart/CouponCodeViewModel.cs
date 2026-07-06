@@ -1,4 +1,4 @@
-﻿namespace DancingGoat.Commerce;
+namespace DancingGoat.Commerce;
 
 /// <summary>
 /// Represents a coupon code and its current status in the shopping cart context.

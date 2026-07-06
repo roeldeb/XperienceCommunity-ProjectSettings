@@ -1,4 +1,4 @@
-﻿namespace DancingGoat
+namespace DancingGoat
 {
     internal static class ProductTagTaxonomyConstants
     {
