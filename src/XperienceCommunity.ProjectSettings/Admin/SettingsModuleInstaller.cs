@@ -46,7 +46,7 @@ internal class SettingsModuleInstaller(IInfoProvider<ResourceInfo> resourceInfoP
 
         info.ClassName = ProjectSettingsInfo.TYPEINFO.ObjectClassName;
         info.ClassTableName = ProjectSettingsInfo.TYPEINFO.ObjectClassName.Replace(".", "_");
-        info.ClassDisplayName = "Channel settings";
+        info.ClassDisplayName = "Project settings";
         info.ClassResourceID = resourceInfo.ResourceID;
         info.ClassType = ClassType.OTHER;
 
@@ -54,9 +54,7 @@ internal class SettingsModuleInstaller(IInfoProvider<ResourceInfo> resourceInfoP
 
         // Fixed field GUIDs: without them every FormFieldInfo gets a random GUID, so each
         // environment ends up with a different class definition (CI/CD churn).
-        var idField = formInfo.GetFormField(nameof(ProjectSettingsInfo.ProjectSettingsID));
-        idField.Guid = new Guid("8fb8ac7e-be69-42ff-8ad3-ffcc3475e00f");
-        formInfo.UpdateFormField(nameof(ProjectSettingsInfo.ProjectSettingsID), idField);
+        formInfo.GetFormField(nameof(ProjectSettingsInfo.ProjectSettingsID)).Guid = new Guid("8fb8ac7e-be69-42ff-8ad3-ffcc3475e00f");
 
         // The column holds a WebsiteChannelID (the channel pages and IWebsiteChannelContext work
         // with website channels), so the reference points at cms.websitechannel: deleting a

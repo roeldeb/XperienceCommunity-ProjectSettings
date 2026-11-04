@@ -405,7 +405,7 @@ Target: Both global and channel settings
 
 ## Database Structure
 
-Settings are stored in the `XperienceCommunity_ProjectSettings` table (created automatically on first application start):
+Settings are stored in the `XperienceCommunity_ProjectSettings` table (created automatically on startup; skipped while the instance runs in read-only mode, e.g. during a zero-downtime deployment):
 
 | Column                       | Description                                      |
 | ---------------------------- | ------------------------------------------------ |

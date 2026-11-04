@@ -49,8 +49,10 @@ public class ProjectSettingsOptionsService(
         {
             return JsonSerializer.Deserialize<T>(settingsValue) ?? new T();
         }
-        catch (JsonException)
+        catch (Exception)
         {
+            // Stale or incompatible JSON (also NotSupportedException for unsupported property types):
+            // fall back to the developer defaults instead of failing every request.
             return new T();
         }
     }
