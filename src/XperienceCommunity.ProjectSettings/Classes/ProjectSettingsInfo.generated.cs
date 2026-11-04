@@ -32,7 +32,7 @@ namespace XperienceCommunity.ProjectSettings.Classes
             TouchCacheDependencies = true,
             DependsOn = new List<ObjectDependency>()
             {
-                new ObjectDependency("ProjectSettingsChannelID", "cms.channel", ObjectDependencyEnum.NotRequired),
+                new ObjectDependency("ProjectSettingsChannelID", "cms.websitechannel", ObjectDependencyEnum.Required),
             },
         };
 
