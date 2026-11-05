@@ -32,13 +32,13 @@ namespace XperienceCommunity.ProjectSettings.Classes
             TouchCacheDependencies = true,
             DependsOn = new List<ObjectDependency>()
             {
-                new ObjectDependency("ProjectSettingsChannelID", "cms.channel", ObjectDependencyEnum.NotRequired),
+                new ObjectDependency("ProjectSettingsChannelID", "cms.websitechannel", ObjectDependencyEnum.Required),
             },
         };
 
 
         /// <summary>
-        /// Channel settings key ID.
+        /// Project settings ID.
         /// </summary>
         [DatabaseField]
         public virtual int ProjectSettingsID
@@ -49,7 +49,7 @@ namespace XperienceCommunity.ProjectSettings.Classes
 
 
         /// <summary>
-        /// Channel settings key channel ID.
+        /// Project settings channel ID.
         /// </summary>
         [DatabaseField]
         public virtual int ProjectSettingsChannelID
@@ -60,7 +60,7 @@ namespace XperienceCommunity.ProjectSettings.Classes
 
 
         /// <summary>
-        /// Channel settings key GUID.
+        /// Project settings GUID.
         /// </summary>
         [DatabaseField]
         public virtual Guid ProjectSettingsGUID
@@ -71,7 +71,7 @@ namespace XperienceCommunity.ProjectSettings.Classes
 
 
         /// <summary>
-        /// Channel settings key name.
+        /// Project settings name.
         /// </summary>
         [DatabaseField]
         public virtual string ProjectSettingsName
@@ -82,7 +82,7 @@ namespace XperienceCommunity.ProjectSettings.Classes
 
 
         /// <summary>
-        /// Channel settings key display name.
+        /// Project settings display name.
         /// </summary>
         [DatabaseField]
         public virtual string ProjectSettingsDisplayName
@@ -93,7 +93,7 @@ namespace XperienceCommunity.ProjectSettings.Classes
 
 
         /// <summary>
-        /// Channel settings key value.
+        /// Project settings value.
         /// </summary>
         [DatabaseField]
         public virtual string ProjectSettingsValue

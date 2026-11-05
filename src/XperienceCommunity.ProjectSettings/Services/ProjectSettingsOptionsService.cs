@@ -1,5 +1,7 @@
 using System.Text.Json;
 
+using CMS.DataEngine;
+using CMS.Helpers;
 using CMS.Websites.Routing;
 
 using Microsoft.Extensions.Options;
@@ -13,42 +15,58 @@ public interface IProjectSettingsOptionsService
     public T GetSettings<T>(int channelId) where T : class, IProjectSettingsType, new();
 }
 
-public class ProjectSettingsOptionsService : IProjectSettingsOptionsService
+public class ProjectSettingsOptionsService(
+    IInfoProvider<ProjectSettingsInfo> projectSettingsProvider,
+    IProgressiveCache progressiveCache) : IProjectSettingsOptionsService
 {
+    private const int CacheMinutes = 60;
+
+    // Touched by Kentico whenever a ProjectSettingsInfo is created, updated or deleted
+    // (TouchCacheDependencies on the type info); touches are synchronised across web farm instances.
+    private static readonly string cacheDependencyKey = $"{ProjectSettingsInfo.OBJECT_TYPE}|all";
+
     public T GetSettings<T>(int channelId) where T : class, IProjectSettingsType, new()
     {
-        var settingsType = new T();
-        string settingsName = settingsType.SettingsName;
+        string settingsName = new T().SettingsName;
 
-        // Try to get settings for the specific channel first
-        var setting = ProjectSettingsInfo.Provider.Get()
-            .WhereEquals(nameof(ProjectSettingsInfo.ProjectSettingsChannelID), channelId)
-            .WhereEquals(nameof(ProjectSettingsInfo.ProjectSettingsName), settingsName)
-            .TopN(1)
-            .FirstOrDefault();
-
-        // If not found, try to get global settings (channelId = 0)
-        setting ??= ProjectSettingsInfo.Provider.Get()
-            .WhereEquals(nameof(ProjectSettingsInfo.ProjectSettingsChannelID), 0)
-            .WhereEquals(nameof(ProjectSettingsInfo.ProjectSettingsName), settingsName)
-            .TopN(1)
-            .FirstOrDefault();
+        // The stored JSON is cached rather than the deserialized object: settings classes are mutable,
+        // so every caller gets its own instance.
+        string? settingsValue = progressiveCache.Load(
+            cacheSettings =>
+            {
+                cacheSettings.CacheDependency = CacheHelper.GetCacheDependency(cacheDependencyKey);
+                return LoadSettingsValue(settingsName, channelId);
+            },
+            new CacheSettings(CacheMinutes, nameof(ProjectSettingsOptionsService), settingsName, channelId));
 
         // If no settings found, return default instance
-        if (setting == null || string.IsNullOrWhiteSpace(setting.ProjectSettingsValue))
+        if (string.IsNullOrWhiteSpace(settingsValue))
         {
             return new T();
         }
 
         try
         {
-            return JsonSerializer.Deserialize<T>(setting.ProjectSettingsValue) ?? new T();
+            return JsonSerializer.Deserialize<T>(settingsValue) ?? new T();
         }
-        catch
+        catch (Exception)
         {
+            // Stale or incompatible JSON (also NotSupportedException for unsupported property types):
+            // fall back to the developer defaults instead of failing every request.
             return new T();
         }
     }
+
+    /// <summary>
+    /// Returns the stored value for the channel when it exists, otherwise the global value (channel 0).
+    /// </summary>
+    private string? LoadSettingsValue(string settingsName, int channelId) =>
+        projectSettingsProvider.Get()
+            .WhereEquals(nameof(ProjectSettingsInfo.ProjectSettingsName), settingsName)
+            .WhereIn(nameof(ProjectSettingsInfo.ProjectSettingsChannelID), new[] { channelId, 0 })
+            .OrderByDescending(nameof(ProjectSettingsInfo.ProjectSettingsChannelID))
+            .TopN(1)
+            .FirstOrDefault()?.ProjectSettingsValue;
 }
 
 /// <summary>

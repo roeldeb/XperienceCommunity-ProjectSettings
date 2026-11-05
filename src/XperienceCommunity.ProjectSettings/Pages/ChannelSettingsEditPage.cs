@@ -3,6 +3,7 @@ using System.Text.Json;
 using CMS.ContentEngine;
 using CMS.Core;
 using CMS.DataEngine;
+using CMS.Websites;
 
 using Kentico.Xperience.Admin.Base;
 using Kentico.Xperience.Admin.Base.Forms;
@@ -41,7 +42,9 @@ public class ChannelSettingsEditPage<T>(Kentico.Xperience.Admin.Base.Forms.Inter
     {
         PageConfiguration.SubmitConfiguration.Label = "Save";
 
-        var channel = channelInfoProvider.Get(ObjectId);
+        // ObjectId is a WebsiteChannelID (EditSectionPage<WebsiteChannelInfo>), not a ChannelID.
+        var websiteChannel = WebsiteChannelInfo.Provider.Get(ObjectId);
+        var channel = websiteChannel is null ? null : channelInfoProvider.Get(websiteChannel.WebsiteChannelChannelID);
         if (channel?.ChannelType != ChannelType.Website)
         {
             ConfigureUnsupportedChannelPage();

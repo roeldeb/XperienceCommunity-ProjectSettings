@@ -12,6 +12,7 @@ namespace XperienceCommunity.ProjectSettings.Admin;
 internal class SettingsModule() : Module(nameof(SettingsModule))
 {
     private ISettingsModuleInstaller? installer;
+    private IReadOnlyModeProvider? readOnlyModeProvider;
 
     protected override void OnInit(ModuleInitParameters parameters)
     {
@@ -20,6 +21,7 @@ internal class SettingsModule() : Module(nameof(SettingsModule))
         var services = parameters.Services;
 
         installer = services.GetService<ISettingsModuleInstaller>();
+        readOnlyModeProvider = services.GetService<IReadOnlyModeProvider>();
 
         if (installer != null)
         {
@@ -27,5 +29,16 @@ internal class SettingsModule() : Module(nameof(SettingsModule))
         }
     }
 
-    private void InitializeModule(object? sender, EventArgs e) => installer?.Install();
+    private void InitializeModule(object? sender, EventArgs e)
+    {
+        // Read-only (zero-downtime) deployments serve a frozen database snapshot where every
+        // write throws ReadOnlyModeException. Skip the installation; it runs once the updated
+        // instance starts in normal (writable) mode.
+        if (readOnlyModeProvider?.IsReadOnly == true)
+        {
+            return;
+        }
+
+        installer?.Install();
+    }
 }

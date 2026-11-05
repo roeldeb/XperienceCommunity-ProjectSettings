@@ -264,6 +264,10 @@ When you inject `IOptions<T>`, settings are resolved automatically based on the 
 2. **Global settings** (channelId = 0) are used as fallback
 3. **Default values** from the class are used if nothing is configured
 
+The stored value is cached per settings type and channel. The cache is cleared automatically whenever a
+settings record is saved or deleted through the admin UI (or the Kentico API), also on other web farm
+instances. Deleting a website channel deletes its channel-specific settings.
+
 ## Admin Navigation
 
 - **Global Settings:** Settings → Project Settings → [Your Settings Page]
@@ -401,7 +405,7 @@ Target: Both global and channel settings
 
 ## Database Structure
 
-Settings are stored in the `XperienceCommunity_ProjectSettings` table (created automatically on first application start):
+Settings are stored in the `XperienceCommunity_ProjectSettings` table (created automatically on startup; skipped while the instance runs in read-only mode, e.g. during a zero-downtime deployment):
 
 | Column                       | Description                                      |
 | ---------------------------- | ------------------------------------------------ |
